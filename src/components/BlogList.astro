@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+<section class="page-intro">
+  <p class="eyebrow">Blog</p>
+  <h1>Writing</h1>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur posuere felis sed velit iaculis,
+    a auctor nibh tincidunt.
+  </p>
+</section>
+
+<section class="blog-list" aria-label="Blog posts">
+  {
+    posts.map((post) => (
+      <article class="glass-panel blog-card">
+        <p class="meta">
+          <span>{post.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+          <span>{post.data.readTime}</span>
+        </p>
+        <h2>
+          <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+        </h2>
+        <p>{post.data.excerpt}</p>
+      </article>
+    ))
+  }
+</section>

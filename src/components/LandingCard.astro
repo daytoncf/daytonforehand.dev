@@ -1,0 +1,184 @@
+---
+import { buildNavLinks, identity, theme } from '../lib/portfolio';
+
+const links = buildNavLinks();
+---
+
+<section class="business-card">
+  <h1>{identity.name}</h1>
+  <p class="role">{identity.role}</p>
+  <p class="location">{identity.location}</p>
+
+  <p class="about">
+      Full-stack developer with experience building enterprise HCM software using PHP, React, and TypeScript.
+      Passionate about building scalable solutions, solving complex technical problems, and continuously learning
+      new technologies.
+  </p>
+
+  <ul class="chips" role="list">
+    <li>UI Engineering</li>
+    <li>Interaction Systems</li>
+    <li>Design Strategy</li>
+  </ul>
+
+  <dl class="contact">
+    <div>
+      <dt>Email</dt>
+      <dd><a href={`mailto:${identity.email}`}>{identity.email}</a></dd>
+    </div>
+    <div>
+      <dt>Status</dt>
+      <dd>{identity.availability}</dd>
+    </div>
+  </dl>
+
+  <div class="flare" aria-hidden="true"></div>
+  <div class="flare flare-alt" aria-hidden="true"></div>
+</section>
+
+<style>
+  .business-card {
+    position: relative;
+    width: min(820px, calc(100vw - 2.5rem));
+    padding: clamp(1.25rem, 3vw, 2.2rem);
+    border-radius: 30px;
+    border: 1px solid rgba(168, 206, 176, 0.36);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--glass) 85%, #11201a 15%), color-mix(in srgb, var(--glass) 90%, transparent));
+    box-shadow: 0 28px 58px -40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(180, 220, 190, 0.35);
+    backdrop-filter: blur(22px) saturate(130%);
+    overflow: hidden;
+  }
+
+  .tone {
+    margin: 0;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.74;
+  }
+
+  .business-card h1 {
+    margin: 0.45rem 0.15rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    line-height: 0.95;
+  }
+
+  .role {
+    margin: 0;
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    letter-spacing: 0.02em;
+    opacity: 0.92;
+  }
+
+  .location {
+    margin: 0.35rem 0 1.1rem;
+    opacity: 0.72;
+  }
+
+  .about {
+    max-width: 80ch;
+    margin: 0 0 1rem;
+    line-height: 1.45;
+    opacity: 0.86;
+  }
+
+  .chips {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .chips li {
+    border-radius: 999px;
+    padding: 0.38rem 0.75rem;
+    background: color-mix(in srgb, var(--accent) 15%, #11201a 85%);
+    border: 1px solid color-mix(in srgb, var(--accent) 44%, #11201a 56%);
+    font-size: 0.84rem;
+  }
+
+  .contact {
+    margin: 1rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .contact dt {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.66;
+    margin-bottom: 0.2rem;
+  }
+
+  .contact dd {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .contact a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .actions {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .actions a {
+    text-decoration: none;
+    border: 1px solid color-mix(in srgb, var(--accent) 44%, #11201a 56%);
+    background: color-mix(in srgb, var(--accent) 15%, #11201a 85%);
+    color: var(--ink);
+    border-radius: 12px;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.92rem;
+    transition: transform 240ms ease, background-color 240ms ease, border-color 240ms ease;
+  }
+
+  .actions a:hover,
+  .actions a:focus-visible {
+    transform: translateY(-2px);
+    background: color-mix(in srgb, var(--accent) 23%, #11201a 77%);
+    border-color: color-mix(in srgb, var(--accent) 62%, #11201a 38%);
+  }
+
+  .flare {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 999px;
+    top: -150px;
+    right: -110px;
+    background: radial-gradient(circle at center, color-mix(in srgb, var(--accent-soft) 35%, white 65%), transparent 68%);
+    pointer-events: none;
+    opacity: 0.45;
+  }
+
+  .flare-alt {
+    left: -140px;
+    bottom: -170px;
+    top: auto;
+    right: auto;
+    background: radial-gradient(circle at center, color-mix(in srgb, var(--tint) 55%, white 45%), transparent 72%);
+  }
+
+  @media (max-width: 640px) {
+    .business-card {
+      padding: 1rem;
+      width: calc(100vw - 1.2rem);
+    }
+
+    .contact {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

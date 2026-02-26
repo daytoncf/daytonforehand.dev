@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import BlogList from '../../components/BlogList.astro';
+import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
+import { sortPostsByDateDesc } from '../../lib/portfolio';
+
+const posts = sortPostsByDateDesc(await getCollection('blog'));
+---
+
+<PortfolioLayout
+  title="Blog • Dayton Hale"
+  description="Notes on design, product thinking, and frontend engineering."
+  active="blog"
+  mode="content"
+>
+  <BlogList posts={posts} />
+</PortfolioLayout>

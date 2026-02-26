@@ -1,0 +1,418 @@
+---
+import { Picture } from 'astro:assets';
+import { buildNavLinks, theme, type PageSection } from '../lib/portfolio';
+import portfolioFlowFieldScript from '../scripts/flow-field-background.ts?url';
+
+interface Props {
+  title: string;
+  active: PageSection;
+  mode?: 'landing' | 'content';
+  description?: string;
+}
+
+const {
+  title,
+  active,
+  mode = 'content',
+  description = 'Developer portfolio',
+} = Astro.props;
+
+const nav = buildNavLinks();
+const styleVars = `
+  --bg:${theme.bg};
+  --bg-alt:${theme.bgAlt};
+  --tint:${theme.tint};
+  --accent:${theme.accent};
+  --accent-soft:${theme.accentSoft};
+  --ink:${theme.ink};
+  --glass:${theme.glass};
+  --glass-border:${theme.glassBorder};
+  --glow:${theme.glow};
+  --font-display:${theme.fontDisplay};
+  --font-body:${theme.fontBody};
+`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Literata:opsz,wght@7..72,400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body class={`mode-${mode}`} style={styleVars}>
+    <div class="liquid-bg" aria-hidden="true">
+      <canvas id="portfolio-moss-canvas" class="portfolio-moss-canvas"></canvas>
+      <svg class="noise-field" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <filter id="noise-fixed">
+          <feTurbulence type="fractalNoise" baseFrequency="0.74 0.61" numOctaves="3" seed="44" stitchTiles="stitch">
+          </feTurbulence>
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+        <rect width="100" height="100" filter="url(#noise-fixed)" opacity={mode === 'landing' ? '0.06' : '0.035'} />
+      </svg>
+    </div>
+
+    <div class="chrome">
+      <header class="nav-wrap">
+        <nav class="page-nav" aria-label="Primary navigation">
+          <a class:list={{ active: active === 'home' }} href={nav.home}>Home</a>
+          <a class:list={{ active: active === 'projects' }} href={nav.projects}>Projects</a>
+          <a class:list={{ active: active === 'resume' }} href={nav.resume}>Resume</a>
+          <a class:list={{ active: active === 'blog' }} href={nav.blog}>Blog</a>
+        </nav>
+      </header>
+
+      <main class:list={{ frame: true, landing: mode === 'landing', content: mode === 'content' }}>
+        <slot />
+      </main>
+    </div>
+
+    <script is:inline type="module" src={portfolioFlowFieldScript}></script>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: dark;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+  }
+
+  .liquid-bg {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 14% 12%, var(--bg-alt), transparent 46%),
+      radial-gradient(circle at 80% 80%, color-mix(in srgb, var(--tint) 58%, transparent), transparent 54%),
+      linear-gradient(130deg, var(--bg), var(--bg-alt));
+  }
+
+  .portfolio-moss-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: linear-gradient(180deg, rgba(22, 39, 31, 0.08), rgba(9, 17, 14, 0.2));
+  }
+
+  .mode-content .portfolio-moss-canvas {
+    background: linear-gradient(180deg, rgba(18, 33, 26, 0.09), rgba(10, 18, 15, 0.24));
+  }
+
+  .noise-field {
+    position: absolute;
+    inset: -8%;
+    width: 116%;
+    height: 116%;
+    mix-blend-mode: soft-light;
+    opacity: 0.45;
+    animation: noise-pan 26s ease-in-out infinite alternate;
+  }
+
+  .chrome {
+    position: relative;
+    z-index: 2;
+    min-height: 100svh;
+    padding: 0.9rem;
+  }
+
+  .nav-wrap {
+    display: flex;
+    justify-content: center;
+    padding-top: 0.25rem;
+    padding-bottom: 0.3rem;
+    max-width: 1160px;
+    margin: 0 auto;
+  }
+
+  .glass-panel {
+    background: linear-gradient(145deg, color-mix(in srgb, var(--glass) 78%, white 22%), color-mix(in srgb, var(--glass) 85%, transparent));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 18px 46px -34px var(--glow), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px) saturate(130%);
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .page-nav a {
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.92rem;
+    border-radius: 10px;
+    padding: 0.42rem 0.72rem;
+    border: 1px solid transparent;
+    opacity: 0.8;
+    transition: border-color 200ms ease, opacity 200ms ease, background-color 200ms ease;
+  }
+
+  .page-nav a:hover,
+  .page-nav a:focus-visible,
+  .page-nav a.active {
+    background: color-mix(in srgb, var(--accent) 16%, #11201a 84%);
+    border-color: color-mix(in srgb, var(--accent) 55%, #11201a 45%);
+    opacity: 1;
+  }
+
+  .frame {
+    max-width: 1160px;
+    margin: 0 auto;
+  }
+
+  .frame.landing {
+    min-height: calc(100svh - 60px);
+    display: grid;
+    place-items: center;
+    padding: clamp(0.8rem, 2vw, 1.2rem);
+  }
+
+  .frame.content {
+    padding: clamp(0.8rem, 2vw, 1.2rem);
+    display: grid;
+    gap: 1rem;
+  }
+
+  .mode-landing {
+    overflow: hidden;
+  }
+
+  .mode-content {
+    overflow-x: hidden;
+  }
+
+  .page-intro,
+  .post-article {
+    width: min(920px, 100%);
+    margin: 0 auto;
+  }
+
+  .page-intro {
+    padding: clamp(1rem, 2vw, 1.4rem);
+  }
+
+  .eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.76rem;
+    opacity: 0.68;
+  }
+
+  .page-intro h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 0.96;
+    margin: 0.45rem 0 0.55rem;
+  }
+
+  .page-intro p {
+    margin: 0;
+    max-width: 64ch;
+    line-height: 1.55;
+    opacity: 0.86;
+  }
+
+  .project-grid,
+  .blog-list {
+    width: min(920px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .project-card,
+  .blog-card {
+    grid-column: span 6;
+    border-radius: 16px;
+    padding: 1rem;
+  }
+
+  .project-card h2,
+  .blog-card h2 {
+    margin: 0.38rem 0;
+    font-family: var(--font-display);
+    font-size: 1.46rem;
+    line-height: 1.06;
+  }
+
+  .project-type,
+  .meta {
+    margin: 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.66;
+    display: flex;
+    gap: 0.7rem;
+  }
+
+  .project-card p,
+  .blog-card p,
+  .resume-layout p {
+    margin: 0;
+    line-height: 1.5;
+    opacity: 0.88;
+  }
+
+  .blog-card a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .blog-card a:hover,
+  .blog-card a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    text-decoration-thickness: 1px;
+  }
+
+  .resume-layout {
+    width: min(920px, 100%);
+    margin: 0 auto;
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: 1.3fr 0.7fr;
+  }
+
+  .resume-layout .glass-panel {
+    border-radius: 16px;
+    padding: 1rem;
+  }
+
+  .resume-layout h2 {
+    font-family: var(--font-display);
+    margin: 0 0 0.75rem;
+    font-size: 1.2rem;
+  }
+
+  .timeline {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .timeline li {
+    padding-left: 0.2rem;
+  }
+
+  .timeline-head {
+    margin: 0 0 0.25rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .timeline-head span {
+    opacity: 0.74;
+    font-size: 0.89rem;
+  }
+
+  .skill-list {
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .skill-list li {
+    background: color-mix(in srgb, var(--accent) 16%, #102017 84%);
+    border-color: color-mix(in srgb, var(--accent) 45%, #102017 55%);
+    border: 1px solid;
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.84rem;
+  }
+
+  .post-article {
+    border-radius: 18px;
+    padding: clamp(1rem, 2vw, 1.4rem);
+  }
+
+  .post-article p {
+    line-height: 1.72;
+    opacity: 0.94;
+  }
+
+  .post-meta {
+    margin: 0 0 0.55rem;
+    opacity: 0.7;
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .post-article h1 {
+    margin: 0 0 0.9rem;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    line-height: 0.98;
+  }
+
+  .post-article a {
+    color: inherit;
+  }
+
+  @keyframes noise-pan {
+    from {
+      transform: translate3d(-0.8%, -0.6%, 0) scale(1.02);
+    }
+    to {
+      transform: translate3d(0.7%, 0.8%, 0) scale(1.01);
+    }
+  }
+
+  @media (max-width: 920px) {
+    .project-card,
+    .blog-card {
+      grid-column: span 12;
+    }
+
+    .resume-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .page-nav {
+      justify-content: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .noise-field {
+      animation: none !important;
+    }
+  }
+</style>

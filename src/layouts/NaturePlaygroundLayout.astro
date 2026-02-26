@@ -1,0 +1,170 @@
+---
+interface Props {
+  route: '1' | '2' | '3' | '4' | '5';
+  title: string;
+  subtitle: string;
+}
+
+const { route, title, subtitle } = Astro.props;
+const routes = ['1', '2', '3', '4', '5'] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Literata:opsz,wght@7..72,400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="scene-wrap">
+      <div class="bg-layer" aria-hidden="true">
+        <slot name="background" />
+        <div class="grain"></div>
+      </div>
+
+      <main class="panel">
+        <p class="tag">Nature Study {route}</p>
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
+
+        <nav class="switcher" aria-label="Background studies">
+          {
+            routes.map((id) => (
+              <a class:list={{ current: id === route }} href={`/${id}`}>
+                {id}
+              </a>
+            ))
+          }
+        </nav>
+
+        <a class="home-link" href="/">Back to Portfolio</a>
+      </main>
+    </div>
+  </body>
+</html>
+
+<style>
+  :global(html),
+  :global(body) {
+    margin: 0;
+    min-height: 100%;
+    background: #0f1c17;
+  }
+
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+  .scene-wrap {
+    min-height: 100svh;
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    font-family: 'Alegreya Sans', sans-serif;
+    color: #e8f2ea;
+    isolation: isolate;
+  }
+
+  .bg-layer {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(135deg, #13241d, #1a2f26);
+  }
+
+  .grain {
+    position: absolute;
+    inset: -30%;
+    pointer-events: none;
+    mix-blend-mode: soft-light;
+    opacity: 0.16;
+    background-image: radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.12) 0.5px, transparent 0.7px);
+    background-size: 3px 3px;
+  }
+
+  .panel {
+    width: min(560px, calc(100vw - 1.6rem));
+    padding: clamp(1rem, 2.5vw, 1.45rem);
+    border-radius: 16px;
+    border: 1px solid rgba(176, 206, 182, 0.28);
+    background: linear-gradient(145deg, rgba(19, 35, 27, 0.56), rgba(16, 28, 22, 0.66));
+    box-shadow: 0 22px 58px -42px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(196, 223, 201, 0.2);
+    backdrop-filter: blur(14px) saturate(118%);
+  }
+
+  .tag {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    opacity: 0.7;
+  }
+
+  h1 {
+    margin: 0.45rem 0 0.5rem;
+    font-family: 'Literata', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 0.98;
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.5;
+    opacity: 0.88;
+    max-width: 46ch;
+  }
+
+  .switcher {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .switcher a {
+    width: 1.8rem;
+    height: 1.8rem;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.84rem;
+    border: 1px solid rgba(156, 191, 164, 0.36);
+    background: rgba(130, 165, 140, 0.13);
+    transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease;
+  }
+
+  .switcher a:hover,
+  .switcher a:focus-visible,
+  .switcher a.current {
+    transform: translateY(-1px);
+    border-color: rgba(176, 218, 187, 0.62);
+    background: rgba(130, 179, 145, 0.22);
+  }
+
+  .home-link {
+    display: inline-block;
+    margin-top: 0.8rem;
+    font-size: 0.86rem;
+    color: inherit;
+    opacity: 0.78;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grain {
+      animation: none !important;
+    }
+  }
+</style>
