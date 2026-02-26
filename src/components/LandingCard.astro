@@ -16,9 +16,8 @@ const links = buildNavLinks();
   </p>
 
   <ul class="chips" role="list">
-    <li>UI Engineering</li>
-    <li>Interaction Systems</li>
-    <li>Design Strategy</li>
+    <li>Full-stack Development</li>
+    <li>System Design</li>
   </ul>
 
   <dl class="contact">
@@ -32,8 +31,21 @@ const links = buildNavLinks();
     </div>
   </dl>
 
-  <div class="flare" aria-hidden="true"></div>
-  <div class="flare flare-alt" aria-hidden="true"></div>
+  <svg style="display:none;">
+    <filter id="displacementFilter">
+      <feTurbulence type="turbulence" 
+        baseFrequency="0.01" 
+        numOctaves="2" 
+        result="turbulence" 
+      />
+      <feDisplacementMap in="SourceGraphic"
+        in2="turbulence"    
+        scale="200" 
+        xChannelSelector="R" 
+        yChannelSelector="G" 
+        />
+    </filter>
+  </svg>
 </section>
 
 <style>
@@ -45,7 +57,7 @@ const links = buildNavLinks();
     border: 1px solid rgba(168, 206, 176, 0.36);
     background: linear-gradient(135deg, color-mix(in srgb, var(--glass) 85%, #11201a 15%), color-mix(in srgb, var(--glass) 90%, transparent));
     box-shadow: 0 28px 58px -40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(180, 220, 190, 0.35);
-    backdrop-filter: blur(22px) saturate(130%);
+    backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
     overflow: hidden;
   }
 

@@ -1,23 +1,17 @@
 ---
-import { Picture } from 'astro:assets';
-import { buildNavLinks, theme, type PageSection } from '../lib/portfolio';
+import { theme } from '../lib/portfolio';
 import portfolioFlowFieldScript from '../scripts/flow-field-background.ts?url';
 
 interface Props {
   title: string;
-  active: PageSection;
-  mode?: 'landing' | 'content';
-  description?: string;
+  description: string;
 }
 
 const {
   title,
-  active,
-  mode = 'content',
-  description = 'Developer portfolio',
+  description,
 } = Astro.props;
 
-const nav = buildNavLinks();
 const styleVars = `
   --bg:${theme.bg};
   --bg-alt:${theme.bgAlt};
@@ -48,7 +42,7 @@ const styleVars = `
     />
     <title>{title}</title>
   </head>
-  <body class={`mode-${mode}`} style={styleVars}>
+  <body style={styleVars}>
     <div class="liquid-bg" aria-hidden="true">
       <canvas id="portfolio-moss-canvas" class="portfolio-moss-canvas"></canvas>
       <svg class="noise-field" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -57,21 +51,11 @@ const styleVars = `
           </feTurbulence>
           <feColorMatrix type="saturate" values="0" />
         </filter>
-        <rect width="100" height="100" filter="url(#noise-fixed)" opacity={mode === 'landing' ? '0.06' : '0.035'} />
+        <rect width="100" height="100" filter="url(#noise-fixed)" opacity={'0.06'} />
       </svg>
     </div>
 
-    <div class="chrome">
-      <header class="nav-wrap">
-        <nav class="page-nav" aria-label="Primary navigation">
-          <a class:list={{ active: active === 'home' }} href={nav.home}>Home</a>
-          <a class:list={{ active: active === 'projects' }} href={nav.projects}>Projects</a>
-          <a class:list={{ active: active === 'resume' }} href={nav.resume}>Resume</a>
-          <a class:list={{ active: active === 'blog' }} href={nav.blog}>Blog</a>
-        </nav>
-      </header>
-
-      <main class:list={{ frame: true, landing: mode === 'landing', content: mode === 'content' }}>
+      <main class:list={{ frame: true, landing: true}}>
         <slot />
       </main>
     </div>
