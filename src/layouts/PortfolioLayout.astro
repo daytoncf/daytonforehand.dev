@@ -1,6 +1,5 @@
 ---
 import { theme } from '../lib/portfolio';
-import portfolioFlowFieldScript from '../scripts/flow-field-background.ts?url';
 
 interface Props {
   title: string;
@@ -60,7 +59,7 @@ const styleVars = `
       </main>
     </div>
 
-    <script is:inline type="module" src={portfolioFlowFieldScript}></script>
+    <script src='../scripts/flow-field-background.ts'></script>
   </body>
 </html>
 
